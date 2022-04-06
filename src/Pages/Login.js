@@ -1,11 +1,11 @@
 import React from "react";
 import { useState } from "react";
 import api from "../api/index";
-import { GoogleLogin } from "react-google-login";
+// import { GoogleLogin } from "react-google-login";
 import { Link } from "react-router-dom";
-import { useRoutes, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { setToken } from "../variables/auth";
-import { Store, UpdateStore } from "../StoreContext";
+import { UpdateStore } from "../StoreContext";
 const Login = () => {
   const nav = useNavigate();
   const [user, setUser] = useState({

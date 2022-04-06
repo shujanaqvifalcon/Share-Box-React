@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useRoutes } from "react-router";
+import React, { useEffect, useState } from "react";
 import Footer from "../Components/Footer";
 import { useLocation, useNavigate } from "react-router";
-import { Store, UpdateStore } from "../StoreContext";
+import { Store } from "../StoreContext";
 import axios from "axios";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import api from "../api";
@@ -17,7 +16,6 @@ const Files = (props) => {
   let location = useLocation();
   let data = location.state;
   const store = Store();
-  let { user } = store;
   const [formModal, setformModal] = useState("opacity-0 invisible");
   const [modal, setmodal] = useState("opacity-0 invisible");
   const [documents, SetDocuments] = useState([]);

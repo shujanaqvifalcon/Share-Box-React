@@ -1,9 +1,8 @@
 import React from "react";
 import { useState } from "react";
-import { GoogleLogin } from "react-google-login";
+// import { GoogleLogin } from "react-google-login";
 import { Link } from "react-router-dom";
 import api from "../api/index";
-import { toast } from "react-toastify";
 
 const Register = () => {
   const [user, setUser] = useState({

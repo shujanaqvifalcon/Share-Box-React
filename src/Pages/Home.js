@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import Footer from "../Components/Footer";
 import api from "../api/index";
-import { useRoutes, useNavigate } from "react-router-dom";
-import { useLocation } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { Store, UpdateStore } from "../StoreContext";
 const Home = () => {
   const nav = useNavigate();
@@ -11,7 +9,6 @@ const Home = () => {
   const updateStore = UpdateStore();
 
   let { user, files } = store;
-  let location = useLocation();
   const [showModal, setshowModal] = useState("opacity-0 invisible");
   const [showDropDown, setshowDropDown] = useState("opacity-0 invisible");
   const [modalHeight, setmodalHeight] = useState("h-auto");
@@ -25,7 +22,6 @@ const Home = () => {
       ...data,
       files: [...data.files, ...e.target.files],
     });
-
   };
 
   const handleSearch = (e) => {
@@ -91,7 +87,7 @@ const Home = () => {
     api("post", "files", formdata)
       .then((res) => {
         updateStore({ files: files.concat(res.data.FilesDb) });
-        let id= res?.data?.FilesDb?.letter+res?.data?.FilesDb?.number
+        let id = res?.data?.FilesDb?.letter + res?.data?.FilesDb?.number;
         nav("../files", { state: id });
       })
       .catch((err) => {
@@ -298,7 +294,7 @@ const Home = () => {
 
             <div className="w-full overflow-hidden relative max-h-[252px] h-full">
               <div className="bg-white w-[118px] h-[32px] absolute top-0 left-0"></div>
-            <input
+              <input
                 type="file"
                 onChange={uploadHandler}
                 name="file_upload"
@@ -307,7 +303,6 @@ const Home = () => {
                 id="file-upload"
               />
             </div>
-
 
             {/* This is the files upload input tag and label */}
 
@@ -318,16 +313,15 @@ const Home = () => {
               >
                 Select Files
               </label>
-             
             </div>
-              <div className="flex items-center justify-center px-7 absolute bottom-5 left-0 w-full">
+            <div className="flex items-center justify-center px-7 absolute bottom-5 left-0 w-full">
               <button
-              className="px-12 w-full  text-center py-4 rounded-md cursor-pointer text-white transition hover:bg-[#643eee] bg-[#93bf9f]"
-              onClick={uploadFiles}
-            >
-              Upload files
-            </button>
-              </div>
+                className="px-12 w-full  text-center py-4 rounded-md cursor-pointer text-white transition hover:bg-[#643eee] bg-[#93bf9f]"
+                onClick={uploadFiles}
+              >
+                Upload files
+              </button>
+            </div>
           </div>
         </div>
       </div>

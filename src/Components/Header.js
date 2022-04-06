@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import api from "../api/index";
 import { Store } from "../StoreContext";
-import { getToken, removeToken } from "../variables/auth";
 
 const Header = () => {
   const { user } = Store();
