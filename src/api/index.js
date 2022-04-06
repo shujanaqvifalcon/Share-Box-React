@@ -6,7 +6,8 @@ import { removeToken } from "../variables/auth";
 const api = async (method = "get", uri, body) => {
   // Default setting for production
  
-    axios.defaults.baseURL = "http://64.225.73.234:8080/";
+    // axios.defaults.baseURL = "http://localhost:8080/";
+      axios.defaults.baseURL = "http://64.225.73.234:8080/";
  
 
   // API Call

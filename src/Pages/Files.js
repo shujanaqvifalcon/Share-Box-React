@@ -35,10 +35,45 @@ const Files = (props) => {
     files: [],
   });
   
+
+  useEffect(() => {
+    api("get", `files/${data}`)
+      .then((res) => {
+        setIbox(res?.data?.file)
+        let today = new Date();
+        if (new Date(res?.data?.file?.expiryDate) > new Date(today)) {
+          res?.data?.file.files.map((e) => {
+             let x = e.file;
+             let val = x.split(".").pop();
+             let ex = val;
+             if (ex == "png" || ex == "jpeg" || ex == "tiff") {
+              setPics((prev) => [...prev, e.file]);
+             } else {
+               SetDocuments((prev) => [...prev, e.file]);
+           }
+           });
+           setAlbum(res?.data?.file?.letter + res?.data?.file?.number )
+           setNumberAlbum( res?.data?.file?.number);
+           SetLetterAlbum(res?.data?.file?.letter )
+           setIbox(res?.data?.file)
+         }
+         else{
+          alert(" Box is expired");
+          nav("../Home");
+         }
+      })
+      .catch((err) => {
+        console.log("SUBMIT err", err.response.data.message);
+        alert("Invalid box id or Box is expired");
+      });
+   
+  },[]);
+
   const CheckAll = (e) => {
     let x = e;
     x = x.split(".").pop();
-    let image = `http://64.225.73.234:8080/${e}`;
+     let image = `http://64.225.73.234:8080/${e}`;
+
     axios({
       url: image, //your url
       method: "GET",
@@ -65,18 +100,20 @@ const Files = (props) => {
       setSelectedItems([]);
     } else {
       setSelectBtn(true);
+      setSelectedItems([]);
       ibox?.files.map((e) => {
         setSelectedItems((prev) => [...prev, e.file]);
       });
     }
   };
 
-  const downlodMany = () => {
+  const downlodFiles = () => {
     if (selectedItems.length > 0) {
       selectedItems.map((e) => {
         let x = e;
         x = x.split(".").pop();
-        let image = `http://64.225.73.234:8080/${e}`;
+         let image = `http://64.225.73.234:8080/${e}`;
+       
         axios({
           url: image, //your url
           method: "GET",
@@ -105,97 +142,16 @@ const Files = (props) => {
     }
   };
  
-  const [buttons, Setbuttons] = useState();
   
-  useEffect(() => {
-
-    api("post", `files/ibox`,{
-      userId:user?._id
-    })
-      .then((res) => {
-        let val = res.buttons.FilesDb;
-        let today = new Date();
-        val = val.filter((i) => {
-          let today = new Date();
-          return new Date(i.expiryDate) > new Date(today);
-        });
-        Setbuttons(val);
-      })
-      .catch((err) => {
-        console.log("SUBMIT err", err.response.buttons.message);
-        alert(err.response.buttons.message);
-      });
-
-
-
-
-    api("get", `files/${data}`)
-      .then((res) => {
-        setIbox(res?.data?.file)
-        let today = new Date();
-        if (new Date(res?.data?.file?.expiryDate) > new Date(today)) {
-          res?.data?.file.files.map((e) => {
-             let x = e.file;
-             let val = x.split(".").pop();
-             let ex = val;
-             if (ex == "png" || ex == "jpeg" || ex == "tiff") {
-              setPics((prev) => [...prev, e.file]);
-             } else {
-               SetDocuments((prev) => [...prev, e.file]);
-           }
-           });
-           setAlbum(res?.data?.file?.letter + res?.data?.file?.number )
-           setNumberAlbum( res?.data?.file?.number);
-           SetLetterAlbum(res?.data?.file?.letter )
-           setIbox(res?.data?.file)
-         }
-      })
-      .catch((err) => {
-        console.log("SUBMIT err", err.response.data.message);
-        alert("Invalid box id or Box is expired");
-      });
-   
-  },[]);
   
-
-
-  let deleteSingle = () =>{
-    if (selectedItems.length > 0) {
-      api("post","files/deleteMany",{files:selectedItems,id:ibox._id}).then((res)=>{
-         setIbox(res?.data?.FilesDb)
-         setSelectedItems([]);
-        //  alert("successfully delted")
-         if(res?.data?.FilesDb?.files?.length<1) {
-          alert("your i-box is empty");
-          nav("../Home");
-        }
-        res?.data?.FilesDb?.files.map((e) => {
-          let x = e.file;
-          let val = x.split(".").pop();
-          let ex = val;
-          if (ex == "png" || ex == "jpeg" || ex == "tiff") {
-           setPics((prev) => [...prev, e.file]);
-          } else {
-            SetDocuments((prev) => [...prev, e.file]);
-        }
-        });
-      }).catch((err)=>{
-        console.log("SUBMIT err", err.response.data.message);
-        alert("error");
-      })
-    window.location.reload(false);
-
-    } else {
-      alert("you need to select atleast one file ");
-    }
-  }
+  
   let deleteAll = () =>{
+    console.log(ibox?._id,"ibox?._id")
     if (selectedItems.length > 0) {
-      api("post","files/deleteMany",{files:selectedItems,id:ibox._id}).then((res)=>{
-         setIbox(res?.data?.FilesDb)
+      api("put","files/deleteMany",{files:selectedItems,id:ibox?._id}).then((res)=>{
          setSelectedItems([]);
-        //  alert("successfully delted")
          if(res?.data?.FilesDb?.files.length<1) {
+          setIbox(res?.data?.FilesDb)
           alert("your i-box is empty");
           nav("../Home");
         }
@@ -213,14 +169,13 @@ const Files = (props) => {
         console.log("SUBMIT err", err.response.data.message);
         alert("error");
       })
-    window.location.reload(false);
-
     } else {
       alert("you need to select atleast one file ");
     }
+    window.location.reload(false);
   }
   
-  let uploadFiles = () =>{
+  let uploadData= () =>{
     if (updateAlbum?.files?.length < 1) {
       return alert("Please select atleast one file first");
     }
@@ -230,12 +185,11 @@ const Files = (props) => {
     for (let i = 0; i < updateAlbum.files.length; i++) {
       formdata.append("files", updateAlbum.files[i]);
     }
-    api("put", "files/updateBox", formdata)
-      .then((res) => {
+    api("post", "files/updateBox", formdata).then((res) => {
         setformModal("opacity-0 invisible");
         let today=new Date()
         if (new Date(res?.data?.file?.expiryDate) > new Date(today)) {
-          res?.data?.file.files.map((e) => {
+          res?.data?.file?.files.map((e) => {
              let x = e.file;
              let val = x.split(".").pop();
              let ex = val;
@@ -260,8 +214,7 @@ const Files = (props) => {
 
   return (
     <>
-
-
+{console.log(ibox,"ibox")}
         <div
         onClick={()=>{
           setmodal('opacity-100 visible')
@@ -315,7 +268,7 @@ const Files = (props) => {
               </div>
 
               <div className="flex items-center gap-5">
-                <button onClick={downlodMany}>
+                <button onClick={downlodFiles}>
                   <img
                     src="/images/download-icon.svg"
                     alt="download"
@@ -387,7 +340,7 @@ const Files = (props) => {
                   <div className="flex items-center gap-4 select-1-parent">
 
                   <i
-              onClick={deleteSingle}
+              onClick={deleteAll}
               className="fas cursor-pointer fa-trash text-xl"></i>
 
                     <input
@@ -435,7 +388,7 @@ const Files = (props) => {
                   
                   <div className="flex items-center gap-8 select-1-parent">
                   <i
-              onClick={deleteSingle}
+              onClick={deleteAll}
               className="fas cursor-pointer fa-trash text-2xl"></i>
                     <input
                       className="custom-control-input select-1 cursor-pointer"
@@ -536,7 +489,7 @@ const Files = (props) => {
               <div className="flex items-center justify-center px-7 absolute bottom-5 left-0 w-full">
               <button
               className="px-12 w-full  text-center py-4 rounded-md cursor-pointer text-white transition hover:bg-[#643eee] bg-[#93bf9f]"
-              onClick={uploadFiles}
+              onClick={uploadData}
             >
               Upload files
             </button>

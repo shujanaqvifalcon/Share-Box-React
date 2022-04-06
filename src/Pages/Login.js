@@ -47,13 +47,13 @@ const Login = () => {
           <div className="font-bold text-3xl text-center">Login</div>
 
           <div className="flex items-center justify-center mt-10 border-b-2 pb-5">
-            <GoogleLogin
+            {/* <GoogleLogin
               clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
               buttonText="Login with Google"
               onSuccess={responseGoogle}
               onFailure={responseGoogle}
               cookiePolicy={"single_host_origin"}
-            />
+            /> */}
           </div>
 
           <input

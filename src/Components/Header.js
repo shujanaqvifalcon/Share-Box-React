@@ -18,7 +18,7 @@ const Header = () => {
         window.location = "/Home";
       })
       .catch((err) => {
-        alert("err", err.data.message);
+        alert("err", err?.data.message);
       });
   };
 
