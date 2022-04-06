@@ -38,7 +38,7 @@ const Files = (props) => {
   const CheckAll = (e) => {
     let x = e;
     x = x.split(".").pop();
-    let image = `http://localhost:5001/${e}`;
+    let image = `http://64.225.73.234:8080/${e}`;
     axios({
       url: image, //your url
       method: "GET",
@@ -76,7 +76,7 @@ const Files = (props) => {
       selectedItems.map((e) => {
         let x = e;
         x = x.split(".").pop();
-        let image = `http://localhost:5001/${e}`;
+        let image = `http://64.225.73.234:8080/${e}`;
         axios({
           url: image, //your url
           method: "GET",
@@ -162,7 +162,6 @@ const Files = (props) => {
   let deleteSingle = () =>{
     if (selectedItems.length > 0) {
       api("post","files/deleteMany",{files:selectedItems,id:ibox._id}).then((res)=>{
-       
          setIbox(res?.data?.FilesDb)
          setSelectedItems([]);
         //  alert("successfully delted")
@@ -428,7 +427,7 @@ const Files = (props) => {
                 <div className="flex items-center gap-6 flex-col ">
                   <>
                     <img
-                      src={`http://localhost:5001/${e}`}
+                      src={`http://64.225.73.234:8080/${e}`}
                       className=" w-auto sm:max-w-[370px]"
                     />
                   </>
