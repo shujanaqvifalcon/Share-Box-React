@@ -116,7 +116,7 @@ const Home = () => {
               return new Date(i.expiryDate) > new Date(today);
             });
             if (newval.length > 0) {
-              nav("../my-ibox", { state: res.data.FilesDb });
+              nav("../my-ibox");
             } else {
               alert("your i-box is empty");
             }

@@ -1,31 +1,31 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRoutes } from "react-router";
 import Footer from "../Components/Footer";
-import { useLocation,useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Store, UpdateStore } from "../StoreContext";
 import axios from "axios";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import api from "../api";
-import { useForm, ValidationError } from '@formspree/react';
+import { useForm, ValidationError } from "@formspree/react";
 
 const Files = (props) => {
   const nav = useNavigate();
   const [state, handleSubmit] = useForm("meqnlnaw");
   const [contactEmail, setcontactEmail] = useState("");
   const [contactMessage, setcontactMessage] = useState("");
-  const [ibox,setIbox]=useState()
+  const [ibox, setIbox] = useState();
   let location = useLocation();
   let data = location.state;
   const store = Store();
   let { user } = store;
-  const [formModal, setformModal] = useState('opacity-0 invisible');
-  const [modal, setmodal] = useState('opacity-0 invisible');
+  const [formModal, setformModal] = useState("opacity-0 invisible");
+  const [modal, setmodal] = useState("opacity-0 invisible");
   const [documents, SetDocuments] = useState([]);
   const [pics, setPics] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [numberalbum, setNumberAlbum] = useState("");
-  const [letteralbum,SetLetterAlbum]=useState("")
-  const [album,setAlbum]=useState("")
+  const [letteralbum, SetLetterAlbum] = useState("");
+  const [album, setAlbum] = useState("");
   const [selectbtn, setSelectBtn] = useState(false);
   const [copy, setCopy] = useState({
     value: data?._id,
@@ -34,45 +34,42 @@ const Files = (props) => {
   const [updateAlbum, SetUpdateAlbum] = useState({
     files: [],
   });
-  
 
   useEffect(() => {
     api("get", `files/${data}`)
       .then((res) => {
-        setIbox(res?.data?.file)
+        setIbox(res?.data?.file);
         let today = new Date();
         if (new Date(res?.data?.file?.expiryDate) > new Date(today)) {
           res?.data?.file.files.map((e) => {
-             let x = e.file;
-             let val = x.split(".").pop();
-             let ex = val;
-             if (ex == "png" || ex == "jpeg" || ex == "tiff") {
+            let x = e.file;
+            let val = x.split(".").pop();
+            let ex = val;
+            if (ex == "png" || ex == "jpeg" || ex == "tiff") {
               setPics((prev) => [...prev, e.file]);
-             } else {
-               SetDocuments((prev) => [...prev, e.file]);
-           }
-           });
-           setAlbum(res?.data?.file?.letter + res?.data?.file?.number )
-           setNumberAlbum( res?.data?.file?.number);
-           SetLetterAlbum(res?.data?.file?.letter )
-           setIbox(res?.data?.file)
-         }
-         else{
+            } else {
+              SetDocuments((prev) => [...prev, e.file]);
+            }
+          });
+          setAlbum(res?.data?.file?.letter + res?.data?.file?.number);
+          setNumberAlbum(res?.data?.file?.number);
+          SetLetterAlbum(res?.data?.file?.letter);
+          setIbox(res?.data?.file);
+        } else {
           alert(" Box is expired");
           nav("../Home");
-         }
+        }
       })
       .catch((err) => {
         console.log("SUBMIT err", err.response.data.message);
         alert("Invalid box id or Box is expired");
       });
-   
-  },[]);
+  }, []);
 
   const CheckAll = (e) => {
     let x = e;
     x = x.split(".").pop();
-     let image = `http://64.225.73.234:8080/${e}`;
+    let image = `http://64.225.73.234:8080/${e}`;
 
     axios({
       url: image, //your url
@@ -92,7 +89,6 @@ const Files = (props) => {
       ...updateAlbum,
       files: [...updateAlbum.files, ...e.target.files],
     });
-
   };
   const selectAll = () => {
     if (selectbtn === true) {
@@ -112,8 +108,8 @@ const Files = (props) => {
       selectedItems.map((e) => {
         let x = e;
         x = x.split(".").pop();
-         let image = `http://64.225.73.234:8080/${e}`;
-       
+        let image = `http://64.225.73.234:8080/${e}`;
+
         axios({
           url: image, //your url
           method: "GET",
@@ -141,92 +137,91 @@ const Files = (props) => {
       setSelectedItems((prev) => [...prev, file]);
     }
   };
- 
-  
-  
-  
-  let deleteAll = () =>{
-    console.log(ibox?._id,"ibox?._id")
+
+  let deleteAll = () => {
+    console.log(ibox?._id, "ibox?._id");
     if (selectedItems.length > 0) {
-      api("put","files/deleteMany",{files:selectedItems,id:ibox?._id}).then((res)=>{
-         setSelectedItems([]);
-         if(res?.data?.FilesDb?.files.length<1) {
-          setIbox(res?.data?.FilesDb)
-          alert("your i-box is empty");
-          nav("../Home");
-        }
-        res?.data?.FilesDb?.files.map((e) => {
-          let x = e.file;
-          let val = x.split(".").pop();
-          let ex = val;
-          if (ex == "png" || ex == "jpeg" || ex == "tiff") {
-           setPics((prev) => [...prev, e.file]);
-          } else {
-            SetDocuments((prev) => [...prev, e.file]);
-        }
+      api("put", "files/deleteMany", { files: selectedItems, id: ibox?._id })
+        .then((res) => {
+          setSelectedItems([]);
+          if (res?.data?.FilesDb?.files.length < 1) {
+            setIbox(res?.data?.FilesDb);
+            alert("your i-box is empty");
+            nav("../Home");
+          }
+          res?.data?.FilesDb?.files.map((e) => {
+            let x = e.file;
+            let val = x.split(".").pop();
+            let ex = val;
+            if (ex == "png" || ex == "jpeg" || ex == "tiff") {
+              setPics((prev) => [...prev, e.file]);
+            } else {
+              SetDocuments((prev) => [...prev, e.file]);
+            }
+          });
+          window.location.reload(false);
+        })
+        .catch((err) => {
+          console.log("SUBMIT err", err.response.data.message);
+          alert("error");
         });
-      }).catch((err)=>{
-        console.log("SUBMIT err", err.response.data.message);
-        alert("error");
-      })
     } else {
       alert("you need to select atleast one file ");
     }
-    window.location.reload(false);
-  }
-  
-  let uploadData= () =>{
+  };
+
+  let uploadData = () => {
     if (updateAlbum?.files?.length < 1) {
       return alert("Please select atleast one file first");
     }
     const formdata = new FormData();
-    formdata.append("letteralbum",letteralbum)
-    formdata.append("numberalbum",numberalbum)
+    formdata.append("letteralbum", letteralbum);
+    formdata.append("numberalbum", numberalbum);
     for (let i = 0; i < updateAlbum.files.length; i++) {
       formdata.append("files", updateAlbum.files[i]);
     }
-    api("post", "files/updateBox", formdata).then((res) => {
+    api("post", "files/updateBox", formdata)
+      .then((res) => {
         setformModal("opacity-0 invisible");
-        let today=new Date()
+        console.log(res.data, "res");
+        let today = new Date();
         if (new Date(res?.data?.file?.expiryDate) > new Date(today)) {
           res?.data?.file?.files.map((e) => {
-             let x = e.file;
-             let val = x.split(".").pop();
-             let ex = val;
-             if (ex == "png" || ex == "jpeg" || ex == "tiff") {
+            let x = e.file;
+            let val = x.split(".").pop();
+            let ex = val;
+            if (ex == "png" || ex == "jpeg" || ex == "tiff") {
               setPics((prev) => [...prev, e.file]);
-             } else {
-               SetDocuments((prev) => [...prev, e.file]);
-           }
-           });
-           setIbox(res?.data?.file)
-          }
+            } else {
+              SetDocuments((prev) => [...prev, e.file]);
+            }
+          });
+          setIbox(res?.data?.file);
+        }
+        window.location.reload(false);
       })
-      
       .catch((err) => {
         console.log("SUBMIT err", err.response.data.message);
         alert(err.response.data.message);
       });
-
-    window.location.reload(false);
-      
-  }
+  };
 
   return (
     <>
-{console.log(ibox,"ibox")}
-        <div
-        onClick={()=>{
-          setmodal('opacity-100 visible')
+      {console.log(ibox, "ibox")}
+      <div
+        onClick={() => {
+          setmodal("opacity-100 visible");
         }}
-        className="w-fit border-2 border-[#7854F7] fixed cursor-pointer top-1/2 bg-white z-10 -right-[110px] px-5 py-4 text-lg font-[600] rounded transform -rotate-90">Improve Us, Give Feedback</div>
+        className="w-fit border-2 border-[#7854F7] fixed cursor-pointer top-1/2 bg-white z-10 -right-[110px] px-5 py-4 text-lg font-[600] rounded transform -rotate-90"
+      >
+        Improve Us, Give Feedback
+      </div>
 
       <div className="w-full relative  pt-[60px]">
-        
         <div className="w-full mx-auto max-w-[1400px] pl-6 pr-20  relative  mt-[50px]">
           <div className="flex items-center first-top-flex justify-between">
-           
-          <div className="font-[600] opacity-90 text-2xl">Your Box</div>
+            <div className="font-[600] opacity-90 text-2xl">Your Box</div>
             <div className="flex items-center justify-center first-inner-flex gap-7">
               <div>
                 <CopyToClipboard
@@ -243,7 +238,8 @@ const Files = (props) => {
                 <div className="font-[600] text-[18px] opacity-90">iBox ID</div>
 
                 <div className="text-[22px] font-[400]  border-[1.6px] border-[#7854F7] outline-none w-[200px] flex items-center justify-center bg-white px-2 h-[60px] rounded-[14px]">
-                  {letteralbum} <span className="text-red-500">{numberalbum}</span>
+                  {letteralbum}{" "}
+                  <span className="text-red-500">{numberalbum}</span>
                 </div>
 
                 <div className="font-[600] text-[18px] opacity-90">
@@ -256,12 +252,12 @@ const Files = (props) => {
           <div className="flex items-center justify-between second-files-flex border-b-2 border-gray-300 mt-7 pb-3">
             <div className="flex items-center gap-7">
               <div className="flex items-center gap-3 select-all-parent select-1-parent">
-                 <input
-                   type="checkbox"
-                   className="select-1 cursor-pointer"
-                   onClick={selectAll}
-                   checked={selectbtn == false ? false : true}
-                   />
+                <input
+                  type="checkbox"
+                  className="select-1 cursor-pointer"
+                  onClick={selectAll}
+                  checked={selectbtn == false ? false : true}
+                />
                 <button onClick={selectAll}>
                   {selectbtn == false ? <>Select All</> : <>De-Select</>}
                 </button>
@@ -277,15 +273,18 @@ const Files = (props) => {
                 </button>
               </div>
               <i
-              onClick={deleteAll}
-              className="fas cursor-pointer fa-trash text-2xl"></i>
+                onClick={deleteAll}
+                className="fas cursor-pointer fa-trash text-2xl"
+              ></i>
 
               <div className="flex items-center gap-7">
-             
-              <div onClick={()=>setformModal('opacity-100 visible')} className="opacity-80 cursor-pointer transition hover:opacity-90">
-                <i className="far fa-plus-circle text-2xl"></i>
+                <div
+                  onClick={() => setformModal("opacity-100 visible")}
+                  className="opacity-80 cursor-pointer transition hover:opacity-90"
+                >
+                  <i className="far fa-plus-circle text-2xl"></i>
+                </div>
               </div>
-            </div>
             </div>
 
             <div className="flex items-center gap-3 cursor-pointer border-b-2 border-[#3E89E2] pb-1 px-4">
@@ -299,145 +298,143 @@ const Files = (props) => {
               </div>
             </div>
           </div>
-          {ibox &&<div className="grid grid-cols-2 gap-5 mt-5">
-          {documents?.map((e) => {
-            return (
-              <>
-                <div className="bg-gray-100 relative gap-3 rounded px-3 py-3 flex items-center justify-between border cursor-pointer transition hover:bg-gray-200">
-                  <div className="opacity-90">File Path :</div>
-                  <div className="font-bold opacity-80">{e}</div>
-{(() => {
-        if (e.split(".").pop() === "docx") {
-          return (
-            <img src= "/images/docx-icon.jpg" className="absolute -top-[10px] left-1/2 w-[25px]"/>
-          )
-        }     
-        if(e.split(".").pop() === "pdf") {
-          return (
-            <img src= "/images/pdf-icon.png" className="absolute -top-[15px] left-1/2 w-[25px]"/>
+          {ibox && (
+            <div className="grid grid-cols-2 gap-5 mt-5">
+              {documents?.map((e) => {
+                return (
+                  <>
+                    <div className="bg-gray-100 relative gap-3 rounded px-3 py-3 flex items-center justify-between border cursor-pointer transition hover:bg-gray-200">
+                      <div className="opacity-90">File Path :</div>
+                      <div className="font-bold opacity-80">{e}</div>
+                      {(() => {
+                        if (e.split(".").pop() === "docx") {
+                          return (
+                            <img
+                              src="/images/docx-icon.jpg"
+                              className="absolute -top-[10px] left-1/2 w-[25px]"
+                            />
+                          );
+                        }
+                        if (e.split(".").pop() === "pdf") {
+                          return (
+                            <img
+                              src="/images/pdf-icon.png"
+                              className="absolute -top-[15px] left-1/2 w-[25px]"
+                            />
+                          );
+                        }
+                        if (e.split(".").pop() === "xls") {
+                          return (
+                            <img
+                              src="/images/xls-icon.png"
+                              className="absolute -top-[10px] left-1/2 w-[25px]"
+                            />
+                          );
+                        }
+                        if (e.split(".").pop() === "xlsx") {
+                          return (
+                            <img
+                              src="/images/xls-icon.png"
+                              className="absolute -top-[10px] left-1/2 w-[25px]"
+                            />
+                          );
+                        } else {
+                          return (
+                            <img
+                              src="/images/file.jpg"
+                              className="absolute -top-[10px] left-1/2 w-[25px]"
+                            />
+                          );
+                        }
+                      })()}
+                      <div className="flex items-center gap-4 select-1-parent">
+                        <i
+                          onClick={deleteAll}
+                          className="fas cursor-pointer fa-trash text-xl"
+                        ></i>
 
-          )
-        } 
-        if(e.split(".").pop() === "xls") {
-          return (
-            <img src= "/images/xls-icon.png" className="absolute -top-[10px] left-1/2 w-[25px]"/>
+                        <input
+                          type="checkbox"
+                          className="select-1 cursor-pointer"
+                          value={e}
+                          checked={
+                            selectedItems.filter((a) => a === e).length > 0
+                          }
+                          onClick={() => {
+                            selectItem(e);
+                          }}
+                        />
 
-          )
-        } 
-        if(e.split(".").pop() === "xlsx") {
-          return (
-            <img src= "/images/xls-icon.png" className="absolute -top-[10px] left-1/2 w-[25px]"/>
-
-          )
-        } 
-
-        else{
-          return (
-            <img src= "/images/file.jpg" className="absolute -top-[10px] left-1/2 w-[25px]"/>
-          )
-        }
-      })()}
-                  <div className="flex items-center gap-4 select-1-parent">
-
-                  <i
-              onClick={deleteAll}
-              className="fas cursor-pointer fa-trash text-xl"></i>
-
-                    <input
-                      type="checkbox"
-                      className="select-1 cursor-pointer"
-                      value={e}
-                      checked={selectedItems.filter((a) => a === e).length > 0}
-                      onClick={() => {
-                        selectItem(e);
-                      }}
-                    />
-
-                    <button
-                      onClick={() => {
-                        CheckAll(e);
-                      }}
-                    >
-                      <img src="/images/download-icon.svg" className="min-w-[20px]" alt="download" />
-                    </button>
-                  </div>
-                </div>
-              </>
-            );
-          })}
-                </div>
-}
-
-
-
-
+                        <button
+                          onClick={() => {
+                            CheckAll(e);
+                          }}
+                        >
+                          <img
+                            src="/images/download-icon.svg"
+                            className="min-w-[20px]"
+                            alt="download"
+                          />
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                );
+              })}
+            </div>
+          )}
 
           {/* FILES */}
-          {ibox&&
-          <div className="flex flex-wrap items-end gap-14 mt-10">
-            {pics?.map((e) => {
-              return (
-                <div className="flex items-center gap-6 flex-col ">
-                  <>
-                    <img
-                      src={`http://64.225.73.234:8080/${e}`}
-                      className=" w-auto sm:max-w-[370px]"
-                    />
-                  </>
+          {ibox && (
+            <div className="flex flex-wrap items-end gap-14 mt-10">
+              {pics?.map((e) => {
+                return (
+                  <div className="flex items-center gap-6 flex-col ">
+                    <>
+                      <img
+                        src={`http://64.225.73.234:8080/${e}`}
+                        className=" w-auto sm:max-w-[370px]"
+                      />
+                    </>
 
-                  
-                  <div className="flex items-center gap-8 select-1-parent">
-                  <i
-              onClick={deleteAll}
-              className="fas cursor-pointer fa-trash text-2xl"></i>
-                    <input
-                      className="custom-control-input select-1 cursor-pointer"
-                      type="checkbox"
-                      value={e}
-                      checked={selectedItems.filter((a) => a === e).length > 0}
-                      onClick={() => {
-                        selectItem(e);
-                      }}
-                    />
+                    <div className="flex items-center gap-8 select-1-parent">
+                      <i
+                        onClick={deleteAll}
+                        className="fas cursor-pointer fa-trash text-2xl"
+                      ></i>
+                      <input
+                        className="custom-control-input select-1 cursor-pointer"
+                        type="checkbox"
+                        value={e}
+                        checked={
+                          selectedItems.filter((a) => a === e).length > 0
+                        }
+                        onClick={() => {
+                          selectItem(e);
+                        }}
+                      />
 
-                    <button
-                      onClick={() => {
-                        CheckAll(e);
-                      }}
-                    >
-                      <img src="/images/download-icon.svg" alt="download" />
-                    </button>
+                      <button
+                        onClick={() => {
+                          CheckAll(e);
+                        }}
+                      >
+                        <img src="/images/download-icon.svg" alt="download" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-}
-          
-
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
       <Footer />
 
+      {/* upload */}
 
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-   {/* upload */}
-
-   <div
+      <div
         className={`fixed left-0 top-0   mainFixedOverlay w-screen h-screen flex items-center justify-center ${formModal}`}
       >
         <div
@@ -454,71 +451,46 @@ const Files = (props) => {
               class="fal fa-times cursor-pointer text-black opacity-70 text-2xl"
               onClick={() => {
                 setformModal("opacity-0 invisible");
-
               }}
             ></i>
           </div>
 
-           
-           
-
           <div className="w-full overflow-hidden relative max-h-[252px] h-full">
-              <div className="bg-white w-[118px] h-[32px] absolute top-0 left-0"></div>
+            <div className="bg-white w-[118px] h-[32px] absolute top-0 left-0"></div>
             <input
-                type="file"
-                onChange={uploadHandler}
-                name="file_upload"
-                className="transform -translate-x-[120px]"
-                multiple
-                id="file-upload"
-              />
-            </div>
+              type="file"
+              onChange={uploadHandler}
+              name="file_upload"
+              className="transform -translate-x-[120px]"
+              multiple
+              id="file-upload"
+            />
+          </div>
 
+          {/* This is the files upload input tag and label */}
 
-            {/* This is the files upload input tag and label */}
-
-            <div className="flex items-center justify-center w-full  absolute bottom-24 left-0">
-              <label
-                htmlFor="file-upload"
-                className="px-12 mx-auto text-center  py-4 rounded-full cursor-pointer text-white transition hover:bg-[#643eee] bg-[#7854F7]"
-              >
-                Select Files
-              </label>
-             
-            </div>
-              <div className="flex items-center justify-center px-7 absolute bottom-5 left-0 w-full">
-              <button
+          <div className="flex items-center justify-center w-full  absolute bottom-24 left-0">
+            <label
+              htmlFor="file-upload"
+              className="px-12 mx-auto text-center  py-4 rounded-full cursor-pointer text-white transition hover:bg-[#643eee] bg-[#7854F7]"
+            >
+              Select Files
+            </label>
+          </div>
+          <div className="flex items-center justify-center px-7 absolute bottom-5 left-0 w-full">
+            <button
               className="px-12 w-full  text-center py-4 rounded-md cursor-pointer text-white transition hover:bg-[#643eee] bg-[#93bf9f]"
               onClick={uploadData}
             >
               Upload files
             </button>
-              </div>
-
-
-
-
+          </div>
         </div>
       </div>
 
+      {/* Form */}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{/* Form */}
-
-<div
+      <div
         className={`fixed left-0 top-0   mainFixedOverlay w-screen h-screen flex items-center justify-center ${modal}`}
       >
         <div
@@ -535,71 +507,61 @@ const Files = (props) => {
               class="fal fa-times cursor-pointer text-black opacity-70 text-2xl"
               onClick={() => {
                 setmodal("opacity-0 invisible");
-
               }}
             ></i>
           </div>
 
-           
-           
-           <div className="font-bold text-3xl opacity-80 mb-5">Help us Improve</div>
+          <div className="font-bold text-3xl opacity-80 mb-5">
+            Help us Improve
+          </div>
 
           <form onSubmit={handleSubmit}>
-    
-      <input
-        id="email"
-        type="email" 
-        name="email"
-        value={contactEmail}
-        onChange={(e)=> setcontactEmail(e.target.value)}
-        className="border border-gray-300 rounded px-3 py-3 outline-none w-full"
-        placeholder="Enter your email address"
-      />
-      <ValidationError 
-        prefix="Email" 
-        field="email"
-        errors={state.errors}
-      />
-      <textarea
-        id="message"
-        name="message"
-        value={contactMessage}
-        onChange={(e)=> setcontactMessage(e.target.value)}
-        placeholder="Enter your message..."
-        className="border border-gray-300 rounded px-3 py-3 outline-none w-full resize-none h-[260px] mt-5"
-      />
-      <ValidationError 
-        prefix="Message" 
-        field="message"
-        errors={state.errors}
-      />
-     <div className="flex items-center justify-center mt-5">
-     <button
-     onClick={()=>{
-      
-
-     setTimeout(() => {
-      alert('Submitted successfully')
-      setcontactMessage('');
-      setcontactEmail('');
-     }, 200);
-     }}
-     type="submit" className="px-12  text-center py-4 rounded-full cursor-pointer text-white transition hover:bg-[#643eee] bg-[#7854F7] " disabled={state.submitting}>
-        Submit
-      </button>
-     </div>
-    </form>
-
-
-
+            <input
+              id="email"
+              type="email"
+              name="email"
+              value={contactEmail}
+              onChange={(e) => setcontactEmail(e.target.value)}
+              className="border border-gray-300 rounded px-3 py-3 outline-none w-full"
+              placeholder="Enter your email address"
+            />
+            <ValidationError
+              prefix="Email"
+              field="email"
+              errors={state.errors}
+            />
+            <textarea
+              id="message"
+              name="message"
+              value={contactMessage}
+              onChange={(e) => setcontactMessage(e.target.value)}
+              placeholder="Enter your message..."
+              className="border border-gray-300 rounded px-3 py-3 outline-none w-full resize-none h-[260px] mt-5"
+            />
+            <ValidationError
+              prefix="Message"
+              field="message"
+              errors={state.errors}
+            />
+            <div className="flex items-center justify-center mt-5">
+              <button
+                onClick={() => {
+                  setTimeout(() => {
+                    alert("Submitted successfully");
+                    setcontactMessage("");
+                    setcontactEmail("");
+                  }, 200);
+                }}
+                type="submit"
+                className="px-12  text-center py-4 rounded-full cursor-pointer text-white transition hover:bg-[#643eee] bg-[#7854F7] "
+                disabled={state.submitting}
+              >
+                Submit
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-
-
-
-
-
-
     </>
   );
 };

@@ -6,9 +6,7 @@ import { Store, UpdateStore } from "../StoreContext";
 const Ibox = (props) => {
   const [data, SetData] = useState();
   const nav = useNavigate();
-  const [documents, SetDocuments] = useState([]);
-  const [pics, setPics] = useState([]);
-  let { user, files } = Store();
+  let { user } = Store();
    let location = useLocation();
   const handleDelete = (e) => {
     api("post", `files/deleteBox/`,{
@@ -42,10 +40,9 @@ const Ibox = (props) => {
       userId:user?._id
     })
       .then((res) => {
-        let val = res.data.FilesDb;
+        let val = res?.data?.FilesDb;
         let today = new Date();
         val = val.filter((i) => {
-          let today = new Date();
           return new Date(i.expiryDate) > new Date(today);
         });
         SetData(val);
@@ -54,7 +51,9 @@ const Ibox = (props) => {
         console.log("SUBMIT err", err.response.data.message);
         alert(err.response.data.message);
       });
-  },[]);
+  },[user]);
+
+  
    let viewBox = (e) =>{
     nav("../files", { state: e });
    }
