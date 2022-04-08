@@ -67,7 +67,7 @@ const Files = (props) => {
   const CheckAll = (e) => {
     let x = e;
     x = x.split(".").pop();
-    let image = `http://shareibox.com/${e}`;
+    let image = `https://shareibox.com/${e}`;
 
     axios({
       url: image, //your url
@@ -106,7 +106,7 @@ const Files = (props) => {
       selectedItems.map((e) => {
         let x = e;
         x = x.split(".").pop();
-        let image = `http://shareibox.com/${e}`;
+        let image = `https://shareibox.com/${e}`;
 
         axios({
           url: image, //your url
@@ -390,7 +390,7 @@ const Files = (props) => {
                   <div className="flex items-center gap-6 flex-col ">
                     <>
                       <img
-                        src={`http://shareibox.com/${e}`}
+                        src={`https://shareibox.com/${e}`}
                         className=" w-auto sm:max-w-[370px]"
                       />
                     </>
