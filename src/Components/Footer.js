@@ -10,11 +10,6 @@ const Footer = () => {
   const [contactEmail, setcontactEmail] = useState("");
   const [contactMessage, setcontactMessage] = useState("");
 
-  // let submitMessage = () =>{
-  //   console.log("submit message")
-
-  // }
-
   return (
     <>
       <div className="w-full bg-[#7854F7] mt-[170px] footer">

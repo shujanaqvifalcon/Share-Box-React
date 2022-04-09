@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Footer from "../Components/Footer";
 import { useLocation, useNavigate } from "react-router";
-import {Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Store } from "../StoreContext";
 import axios from "axios";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -44,7 +44,15 @@ const Files = (props) => {
             let x = e.file;
             let val = x.split(".").pop();
             let ex = val;
-            if (ex == "png" || ex == "jpeg" || ex == "tiff" || ex == "PNG" || ex == "svg" || ex == "webp") {
+            if (
+              ex == "png" ||
+              ex == "jpeg" ||
+              ex == "jpg" ||
+              ex == "tiff" ||
+              ex == "PNG" ||
+              ex == "svg" ||
+              ex == "webp"
+            ) {
               setPics((prev) => [...prev, e.file]);
             } else {
               SetDocuments((prev) => [...prev, e.file]);
@@ -66,8 +74,9 @@ const Files = (props) => {
   }, []);
 
   const CheckAll = (e) => {
-    let x = e;
-    x = x.split(".").pop();
+    let x = e.substring(22);
+    x = x.split(".").shift();
+    let y = e.split(".").pop();
     let image = `https://shareibox.com/${e}`;
 
     axios({
@@ -78,7 +87,7 @@ const Files = (props) => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", `file.${x}`); //or any other extension
+      link.setAttribute("download", `${x}.${y}`); //or any other extension
       document.body.appendChild(link);
       link.click();
     });
@@ -105,8 +114,9 @@ const Files = (props) => {
   const downlodFiles = () => {
     if (selectedItems.length > 0) {
       selectedItems.map((e) => {
-        let x = e;
-        x = x.split(".").pop();
+        let x = e.substring(22);
+        x = x.split(".").shift();
+        let y = e.split(".").pop();
         let image = `https://shareibox.com/${e}`;
 
         axios({
@@ -117,9 +127,10 @@ const Files = (props) => {
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", `file.${x}`); //or any other extension
+          link.setAttribute("download", `${x}.${y}`); //or any other extension
           document.body.appendChild(link);
           link.click();
+          setSelectBtn(false);
           setSelectedItems([]);
         });
       });
@@ -138,7 +149,6 @@ const Files = (props) => {
   };
 
   let deleteAll = () => {
-    console.log(ibox?._id, "ibox?._id");
     if (selectedItems.length > 0) {
       api("put", "files/deleteMany", { files: selectedItems, id: ibox?._id })
         .then((res) => {
@@ -152,12 +162,22 @@ const Files = (props) => {
             let x = e.file;
             let val = x.split(".").pop();
             let ex = val;
-            if (ex == "png" || ex == "jpeg" || ex == "tiff"|| ex == "PNG" || ex == "svg" || ex == "webp") {
+            if (
+              ex == "png" ||
+              ex == "jpeg" ||
+              ex == "jpg" ||
+              ex == "tiff" ||
+              ex == "PNG" ||
+              ex == "svg" ||
+              ex == "webp"
+            ) {
               setPics((prev) => [...prev, e.file]);
             } else {
               SetDocuments((prev) => [...prev, e.file]);
             }
           });
+          setSelectBtn(false);
+          setSelectedItems([]);
           window.location.reload(false);
         })
         .catch((err) => {
@@ -182,14 +202,21 @@ const Files = (props) => {
     api("post", "files/updateBox", formdata)
       .then((res) => {
         setformModal("opacity-0 invisible");
-        console.log(res.data, "res");
         let today = new Date();
         if (new Date(res?.data?.file?.expiryDate) > new Date(today)) {
           res?.data?.file?.files.map((e) => {
             let x = e.file;
             let val = x.split(".").pop();
             let ex = val;
-            if (ex == "png" || ex == "jpeg" || ex == "tiff" || ex == "PNG" || ex == "svg" || ex == "webp") {
+            if (
+              ex == "png" ||
+              ex == "jpeg" ||
+              ex == "jpg" ||
+              ex == "tiff" ||
+              ex == "PNG" ||
+              ex == "svg" ||
+              ex == "webp"
+            ) {
               setPics((prev) => [...prev, e.file]);
             } else {
               SetDocuments((prev) => [...prev, e.file]);
@@ -219,16 +246,14 @@ const Files = (props) => {
       <div className="w-full relative  pt-[60px]">
         <div className="w-full mx-auto max-w-[1400px] pl-6 pr-20  relative  mt-[50px]">
           <div className="flex items-center first-top-flex justify-between">
-            <div className="font-[600] opacity-90 text-2xl flex items-center gap-3">Your Box 
-            <Link
-            to="/Home"
-                 
-                  className="opacity-80 cursor-pointer transition hover:opacity-90"
-                >
-                  <i className="far fa-plus-circle text-2xl"></i>
-                </Link>
-
-            
+            <div className="font-[600] opacity-90 text-2xl flex items-center gap-3">
+              Your Box
+              <Link
+                to="/Home"
+                className="opacity-80 cursor-pointer transition hover:opacity-90"
+              >
+                <i className="far fa-plus-circle text-2xl"></i>
+              </Link>
             </div>
             <div className="flex items-center justify-center first-inner-flex gap-7">
               <div>
@@ -313,7 +338,9 @@ const Files = (props) => {
                   <>
                     <div className="bg-gray-100 relative gap-3 rounded px-3 py-3 flex items-center justify-between border cursor-pointer transition hover:bg-gray-200">
                       <div className="opacity-90">File Name :</div>
-                      <div className="font-bold opacity-80">{e.substring(22)}</div>
+                      <div className="font-bold opacity-80">
+                        {e.substring(22)}
+                      </div>
                       {(() => {
                         if (e.split(".").pop() === "docx") {
                           return (
@@ -356,34 +383,35 @@ const Files = (props) => {
                         }
                       })()}
                       <div className="flex items-center gap-4 select-1-parent">
-                        <i
-                          onClick={deleteAll}
-                          className="fas cursor-pointer fa-trash text-xl"
-                        ></i>
-
-                        <input
-                          type="checkbox"
-                          className="select-1 cursor-pointer"
-                          value={e}
-                          checked={
-                            selectedItems.filter((a) => a === e).length > 0
-                          }
-                          onClick={() => {
-                            selectItem(e);
-                          }}
-                        />
-
-                        <button
-                          onClick={() => {
-                            CheckAll(e);
-                          }}
-                        >
-                          <img
-                            src="/images/download-icon.svg"
-                            className="min-w-[20px]"
-                            alt="download"
+                        <>
+                          <i
+                            onClick={deleteAll}
+                            className="fas cursor-pointer fa-trash text-xl"
+                          ></i>
+                          <input
+                            type="checkbox"
+                            className="select-1 cursor-pointer"
+                            value={e}
+                            checked={
+                              selectedItems.filter((a) => a === e).length > 0
+                            }
+                            onClick={() => {
+                              selectItem(e);
+                            }}
                           />
-                        </button>
+
+                          <button
+                            onClick={() => {
+                              CheckAll(e);
+                            }}
+                          >
+                            <img
+                              src="/images/download-icon.svg"
+                              className="min-w-[20px]"
+                              alt="download"
+                            />
+                          </button>
+                        </>
                       </div>
                     </div>
                   </>
@@ -399,47 +427,44 @@ const Files = (props) => {
                 return (
                   <div className="flex items-center gap-6 flex-col ">
                     <>
-                    
-                        
-                 <div className="w-[300px] h-[300px]">
-                 <img
-                        src={`https://shareibox.com/${e}`}
-                        className="w-full h-full object-cover object-center "
-                      />
-                 </div>
-                     
+                      <div className="w-[300px] h-[300px]">
+                        <img
+                          src={`https://shareibox.com/${e}`}
+                          className="w-full h-full object-cover object-center "
+                        />
+                      </div>
                     </>
-                      
-
                     {/* IMAGE NAME */}
-                    <div className="font-bold opacity-80">{e.substring(22)}</div>
- 
-
-                    <div className="flex items-center gap-8 select-1-parent">
-                      <i
-                        onClick={deleteAll}
-                        className="fas cursor-pointer fa-trash text-2xl"
-                      ></i>
-                      <input
-                        className="custom-control-input select-1 cursor-pointer"
-                        type="checkbox"
-                        value={e}
-                        checked={
-                          selectedItems.filter((a) => a === e).length > 0
-                        }
-                        onClick={() => {
-                          selectItem(e);
-                        }}
-                      />
-
-                      <button
-                        onClick={() => {
-                          CheckAll(e);
-                        }}
-                      >
-                        <img src="/images/download-icon.svg" alt="download" />
-                      </button>
+                    <div className="font-bold opacity-80">
+                      {e.substring(22)}
                     </div>
+                    <>
+                      <div className="flex items-center gap-8 select-1-parent">
+                        <i
+                          onClick={deleteAll}
+                          className="fas cursor-pointer fa-trash text-2xl"
+                        ></i>
+                        <input
+                          className="custom-control-input select-1 cursor-pointer"
+                          type="checkbox"
+                          value={e}
+                          checked={
+                            selectedItems.filter((a) => a === e).length > 0
+                          }
+                          onClick={() => {
+                            selectItem(e);
+                          }}
+                        />
+
+                        <button
+                          onClick={() => {
+                            CheckAll(e);
+                          }}
+                        >
+                          <img src="/images/download-icon.svg" alt="download" />
+                        </button>
+                      </div>
+                    </>
                   </div>
                 );
               })}
