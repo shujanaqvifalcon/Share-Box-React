@@ -91,6 +91,8 @@ const Files = (props) => {
       document.body.appendChild(link);
       link.click();
     });
+    setSelectBtn(false);
+    setSelectedItems([]);
   };
   const uploadHandler = (e) => {
     SetUpdateAlbum({
