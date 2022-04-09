@@ -31,13 +31,13 @@ const Login = () => {
         }
       })
       .catch((err) => {
-        console.log("SUBMIT err", err.response.data.message);
+        // console.log("SUBMIT err", err.response.data.message);
         alert(err.response.data.message);
       });
   };
 
   const responseGoogle = (response) => {
-    console.log(response);
+    // console.log(response);
   };
 
   return (

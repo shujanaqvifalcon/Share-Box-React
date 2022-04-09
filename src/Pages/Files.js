@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Footer from "../Components/Footer";
 import { useLocation, useNavigate } from "react-router";
+import {Link } from "react-router-dom";
 import { Store } from "../StoreContext";
 import axios from "axios";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -43,7 +44,7 @@ const Files = (props) => {
             let x = e.file;
             let val = x.split(".").pop();
             let ex = val;
-            if (ex == "png" || ex == "jpeg" || ex == "tiff") {
+            if (ex == "png" || ex == "jpeg" || ex == "tiff" || ex == "PNG" || ex == "svg" || ex == "webp") {
               setPics((prev) => [...prev, e.file]);
             } else {
               SetDocuments((prev) => [...prev, e.file]);
@@ -151,7 +152,7 @@ const Files = (props) => {
             let x = e.file;
             let val = x.split(".").pop();
             let ex = val;
-            if (ex == "png" || ex == "jpeg" || ex == "tiff") {
+            if (ex == "png" || ex == "jpeg" || ex == "tiff"|| ex == "PNG" || ex == "svg" || ex == "webp") {
               setPics((prev) => [...prev, e.file]);
             } else {
               SetDocuments((prev) => [...prev, e.file]);
@@ -188,7 +189,7 @@ const Files = (props) => {
             let x = e.file;
             let val = x.split(".").pop();
             let ex = val;
-            if (ex == "png" || ex == "jpeg" || ex == "tiff") {
+            if (ex == "png" || ex == "jpeg" || ex == "tiff" || ex == "PNG" || ex == "svg" || ex == "webp") {
               setPics((prev) => [...prev, e.file]);
             } else {
               SetDocuments((prev) => [...prev, e.file]);
@@ -206,7 +207,6 @@ const Files = (props) => {
 
   return (
     <>
-      {console.log(ibox, "ibox")}
       <div
         onClick={() => {
           setmodal("opacity-100 visible");
@@ -219,7 +219,17 @@ const Files = (props) => {
       <div className="w-full relative  pt-[60px]">
         <div className="w-full mx-auto max-w-[1400px] pl-6 pr-20  relative  mt-[50px]">
           <div className="flex items-center first-top-flex justify-between">
-            <div className="font-[600] opacity-90 text-2xl">Your Box</div>
+            <div className="font-[600] opacity-90 text-2xl flex items-center gap-3">Your Box 
+            <Link
+            to="/Home"
+                 
+                  className="opacity-80 cursor-pointer transition hover:opacity-90"
+                >
+                  <i className="far fa-plus-circle text-2xl"></i>
+                </Link>
+
+            
+            </div>
             <div className="flex items-center justify-center first-inner-flex gap-7">
               <div>
                 <CopyToClipboard
@@ -302,8 +312,8 @@ const Files = (props) => {
                 return (
                   <>
                     <div className="bg-gray-100 relative gap-3 rounded px-3 py-3 flex items-center justify-between border cursor-pointer transition hover:bg-gray-200">
-                      <div className="opacity-90">File Path :</div>
-                      <div className="font-bold opacity-80">{e}</div>
+                      <div className="opacity-90">File Name :</div>
+                      <div className="font-bold opacity-80">{e.substring(22)}</div>
                       {(() => {
                         if (e.split(".").pop() === "docx") {
                           return (
@@ -384,16 +394,26 @@ const Files = (props) => {
 
           {/* FILES */}
           {ibox && (
-            <div className="flex flex-wrap items-end gap-14 mt-10">
+            <div className="flex flex-wrap items-end gap-10 mt-10">
               {pics?.map((e) => {
                 return (
                   <div className="flex items-center gap-6 flex-col ">
                     <>
-                      <img
+                    
+                        
+                 <div className="w-[300px] h-[300px]">
+                 <img
                         src={`https://shareibox.com/${e}`}
-                        className=" w-auto sm:max-w-[370px]"
+                        className="w-full h-full object-cover object-center "
                       />
+                 </div>
+                     
                     </>
+                      
+
+                    {/* IMAGE NAME */}
+                    <div className="font-bold opacity-80">{e.substring(22)}</div>
+ 
 
                     <div className="flex items-center gap-8 select-1-parent">
                       <i
