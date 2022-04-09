@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Footer from "../Components/Footer";
 import { useNavigate } from "react-router";
 import api from "../api/index";
@@ -57,7 +58,7 @@ const Ibox = (props) => {
     <>
       <div className="w-full relative ibox-parent pt-[60px] min-h-screen">
         <div className="w-full mx-auto max-w-[1400px] px-6  relative  mt-20">
-          <div className="font-bold text-2xl mb-2 opacity-90">Your iBox:</div>
+          <div className="font-bold text-2xl mb-4 opacity-90 flex items-center gap-5">Your iBox:</div>
           <div className="flex items-center  flex-wrap gap-5">
             {data?.map((i) => {
               return (

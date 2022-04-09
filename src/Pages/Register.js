@@ -11,7 +11,7 @@ const Register = () => {
     confirmpassword: "",
   });
   const responseGoogle = (response) => {
-    console.log(response);
+    // console.log(response);
   };
   const handleSubmit = () => {
     if (!user.email || !user.password || !user.confirmpassword) {
@@ -32,7 +32,7 @@ const Register = () => {
           window.location = "/login";
         })
         .catch((err) => {
-          console.log("SUBMIT err", err.response.data);
+          // console.log("SUBMIT err", err.response.data);
           alert(err.response.data.message);
         });
     }
