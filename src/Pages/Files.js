@@ -17,6 +17,7 @@ const Files = (props) => {
   let location = useLocation();
   let data = location.state;
   const store = Store();
+  const [progressBar, setprogressBar] = useState('hidden');
   const [formModal, setformModal] = useState("opacity-0 invisible");
   const [modal, setmodal] = useState("opacity-0 invisible");
   const [documents, SetDocuments] = useState([]);
@@ -97,6 +98,8 @@ const Files = (props) => {
       ...updateAlbum,
       files: [...updateAlbum.files, ...e.target.files],
     });
+    setprogressBar('hidden')
+
   };
   const selectAll = () => {
     if (selectbtn === true) {
@@ -193,6 +196,8 @@ const Files = (props) => {
     if (updateAlbum?.files?.length < 1) {
       return alert("Please select atleast one file first");
     }
+    setprogressBar('block')
+
     const formdata = new FormData();
     formdata.append("letteralbum", letteralbum);
     formdata.append("numberalbum", numberalbum);
@@ -430,7 +435,7 @@ const Files = (props) => {
                       <div className="w-[300px] h-[300px]">
                         <img
                           src={`https://shareibox.com/${e}`}
-                          className="w-full h-full object-cover object-center "
+                          className="w-full h-full object-cover object-top "
                         />
                       </div>
                     </>
@@ -520,6 +525,13 @@ const Files = (props) => {
               Select Files
             </label>
           </div>
+
+          <div className={`w-full flex items-center mx-auto transform translate-y-10 justify-center flex-col ${progressBar} }`}>
+<img src="/images/loading.svg" alt="progress bar" className={ `w-[160px] `} />
+  <div className="opacity-80 transform -translate-y-8">Uploading</div>
+</div>
+
+
           <div className="flex items-center justify-center px-7 absolute bottom-5 left-0 w-full">
             <button
               className="px-12 w-full  text-center py-4 rounded-md cursor-pointer text-white transition hover:bg-[#643eee] bg-[#93bf9f]"
