@@ -7,8 +7,8 @@ const Home = () => {
   const nav = useNavigate();
   const store = Store();
   const updateStore = UpdateStore();
-
   let { user, files } = store;
+  const [progressBar, setprogressBar] = useState('hidden');
   const [showModal, setshowModal] = useState("opacity-0 invisible");
   const [showDropDown, setshowDropDown] = useState("opacity-0 invisible");
   const [modalHeight, setmodalHeight] = useState("h-auto");
@@ -22,6 +22,8 @@ const Home = () => {
       ...data,
       files: [...data.files, ...e.target.files],
     });
+
+    setprogressBar('hidden')
   };
 
   const handleSearch = (e) => {
@@ -84,6 +86,8 @@ const Home = () => {
       expiryDate = new Date(expiryDate);
       formdata.append("expiryDate", expiryDate);
     }
+    setprogressBar('block')
+
     api("post", "files", formdata)
       .then((res) => {
         updateStore({ files: files.concat(res.data.FilesDb) });
@@ -94,7 +98,10 @@ const Home = () => {
         console.log("SUBMIT err", err.response.data.message);
         alert(err.response.data.message);
       });
-  };
+
+ 
+    
+    };
 
   const handleBox = () => {
     if (!user) {
@@ -306,15 +313,21 @@ const Home = () => {
 
             {/* This is the files upload input tag and label */}
 
-            <div className="flex items-center justify-center w-full  absolute bottom-24 left-0">
+            <div className="flex items-center z-10 justify-center w-full  absolute bottom-24 left-0">
               <label
                 htmlFor="file-upload"
                 className="px-12 mx-auto text-center  py-4 rounded-full cursor-pointer text-white transition hover:bg-[#643eee] bg-[#7854F7]"
               >
                 Select Files
               </label>
+                           
             </div>
-            <div className="flex items-center justify-center px-7 absolute bottom-5 left-0 w-full">
+            
+<div className={`w-full flex items-center mx-auto transform -translate-y-10 justify-center flex-col ${progressBar} }`}>
+<img src="/images/loading.svg" alt="progress bar" className={ `w-[160px] `} />
+  <div className="opacity-80 transform -translate-y-8">Uploading</div>
+</div>
+            <div className="flex items-center z-10 justify-center px-7 absolute bottom-5 left-0 w-full">
               <button
                 className="px-12 w-full  text-center py-4 rounded-md cursor-pointer text-white transition hover:bg-[#643eee] bg-[#93bf9f]"
                 onClick={uploadFiles}

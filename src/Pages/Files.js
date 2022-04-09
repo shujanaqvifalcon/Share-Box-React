@@ -211,13 +211,13 @@ const Files = (props) => {
         onClick={() => {
           setmodal("opacity-100 visible");
         }}
-        className="w-fit border-2 border-[#7854F7] fixed cursor-pointer top-1/2 bg-white z-10 -right-[110px] px-5 py-4 text-lg font-[600] rounded transform -rotate-90"
+        className="w-fit border-2 border-[#7854F7] fixed cursor-pointer hidden sm:flex top-1/2 bg-white z-10 -right-[110px] px-5 py-4 text-lg font-[600] rounded transform -rotate-90"
       >
         Improve Us, Give Feedback
       </div>
 
       <div className="w-full relative  pt-[60px]">
-        <div className="w-full mx-auto max-w-[1400px] pl-6 pr-20  relative  mt-[50px]">
+        <div className="w-full mx-auto max-w-[1400px] pl-6 pr-6 sm:pr-20  relative  mt-[50px]">
           <div className="flex items-center first-top-flex justify-between">
             <div className="font-[600] opacity-90 text-2xl flex items-center gap-3">Your Box 
             <Link
@@ -307,11 +307,11 @@ const Files = (props) => {
             </div>
           </div>
           {ibox && (
-            <div className="grid grid-cols-2 gap-5 mt-5">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
               {documents?.map((e) => {
                 return (
                   <>
-                    <div className="bg-gray-100 relative gap-3 rounded px-3 py-3 flex items-center justify-between border cursor-pointer transition hover:bg-gray-200">
+                    <div className="bg-gray-100 relative gap-3 rounded px-3 py-3 flex flex-col sm:flex-row items-center justify-between border cursor-pointer transition hover:bg-gray-200">
                       <div className="opacity-90">File Name :</div>
                       <div className="font-bold opacity-80">{e.substring(22)}</div>
                       {(() => {

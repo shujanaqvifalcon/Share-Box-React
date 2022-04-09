@@ -13,7 +13,6 @@ const Routing = () => {
   let { user } = store;
   useEffect(() => {
     let user = localStorage.getItem("user");
-    console.log(user);
     try {
       updateStore({ user: JSON.parse(user) });
     } catch (err) {
