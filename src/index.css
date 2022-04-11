@@ -121,6 +121,8 @@ padding: 0 40px;
 
 
 
+
+
 @media (max-width:775px){
   .home-page-grid{
     grid-template-columns: 1fr;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Footer from "../Components/Footer";
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
-import { Store } from "../StoreContext";
+import { Store, UpdateStore, boxIDValue, setboxIDValue } from "../StoreContext";
 import axios from "axios";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import api from "../api";
@@ -10,13 +10,15 @@ import { useForm, ValidationError } from "@formspree/react";
 
 const Files = (props) => {
   const nav = useNavigate();
+  const store = Store();
+  const updateStore = UpdateStore();
+  let { user, files } = store;
   const [state, handleSubmit] = useForm("meqnlnaw");
   const [contactEmail, setcontactEmail] = useState("");
   const [contactMessage, setcontactMessage] = useState("");
   const [ibox, setIbox] = useState();
   let location = useLocation();
   let data = location.state;
-  const store = Store();
   const [progressBar, setprogressBar] = useState('hidden');
   const [formModal, setformModal] = useState("opacity-0 invisible");
   const [modal, setmodal] = useState("opacity-0 invisible");
@@ -239,6 +241,42 @@ const Files = (props) => {
       });
   };
 
+
+
+
+  const handleBox = () => {
+    if (!user) {
+      alert("You need to login first ");
+      nav("../login");
+    } else {
+      api("post", "files/ibox", {
+        userId: user?._id,
+      })
+        .then((res) => {
+          if (res.data.FilesDb.length > 0) {
+            let val = res.data.FilesDb;
+            let today = new Date();
+            let newval = val.filter((i) => {
+              return new Date(i.expiryDate) > new Date(today);
+            });
+            if (newval.length > 0) {
+              nav("../my-ibox");
+            } else {
+              nav("../Home");
+            }
+          } else {
+            nav("../Home");
+          }
+        })
+        .catch((err) => {
+          console.log("SUBMIT err", err.response.data);
+          alert(err.response.data.message);
+        });
+    }
+  };
+
+
+
   return (
     <>
       <div
@@ -254,13 +292,11 @@ const Files = (props) => {
         <div className="w-full mx-auto max-w-[1400px] pl-6 pr-6 sm:pr-20  relative  mt-[50px]">
           <div className="flex items-center first-top-flex justify-between">
             <div className="font-[600] opacity-90 text-2xl flex items-center gap-3">
-              Your Box
-              <Link
-                to="/Home"
-                className="opacity-80 cursor-pointer transition hover:opacity-90"
-              >
-                <i className="far fa-plus-circle text-2xl"></i>
-              </Link>
+             
+                <button 
+                onClick={handleBox}
+                className="px-4 py-3 rounded-md text-white font-[500] text-base bg-[#7854F7]">Go to your iBox</button>
+              
             </div>
             <div className="flex items-center justify-center first-inner-flex gap-7">
               <div>

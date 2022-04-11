@@ -63,7 +63,7 @@ const Ibox = (props) => {
             {data?.map((i) => {
               return (
                 <>
-                  <div className="bg-gray-200 border flex items-center gap-4 px-2 py-2 rounded">
+                  <div className="bg-[#f5f5f5] border border-[#f5f5f5] flex items-center gap-4 px-2 py-2 rounded">
                     <div className="text-[20px] font-[400]">
                       {i.letter}
                       {i.number}

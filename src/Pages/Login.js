@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { setToken } from "../variables/auth";
 import { UpdateStore } from "../StoreContext";
 const Login = () => {
+
+
   const nav = useNavigate();
   const [user, setUser] = useState({
     email: "",
@@ -19,7 +21,27 @@ const Login = () => {
         alert("Successfully logged In");
         const token = res.data.token;
         const user = res.data.user;
-        nav("../Home", { state: res.data.user });
+        api("post", "files/ibox", {
+          userId: user?._id,
+        })
+          .then((res) => {
+            if (res.data.FilesDb.length > 0) {
+              let val = res.data.FilesDb;
+              let today = new Date();
+              let newval = val.filter((i) => {
+                return new Date(i.expiryDate) > new Date(today);
+              });
+              if (newval.length > 0) {
+                nav("../my-ibox");
+              } else {
+              }
+            } else {
+            }
+          })
+          .catch((err) => {
+            console.log("SUBMIT err", err.response.data);
+            alert(err.response.data.message);
+          });
         if (token && res.status === 200) {
           localStorage.setItem("user", JSON.stringify(user));
           setToken(token);
@@ -29,6 +51,10 @@ const Login = () => {
             user: user,
           });
         }
+
+
+        
+        
       })
       .catch((err) => {
         // console.log("SUBMIT err", err.response.data.message);
