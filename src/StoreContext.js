@@ -10,6 +10,7 @@ export function Store() {
   return useContext(storeContext);
 }
 
+
 export function UpdateStore() {
   return useContext(storeUpdateContext);
 }

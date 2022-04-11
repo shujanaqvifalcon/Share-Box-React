@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Footer from "../Components/Footer";
 import api from "../api/index";
 import { useNavigate } from "react-router-dom";
@@ -103,10 +103,11 @@ const Home = () => {
     
     };
 
-  const handleBox = () => {
+
+   useEffect(() => {
+
     if (!user) {
-      alert("You need to login first ");
-      nav("../login");
+     
     } else {
       api("post", "files/ibox", {
         userId: user?._id,
@@ -118,13 +119,13 @@ const Home = () => {
             let newval = val.filter((i) => {
               return new Date(i.expiryDate) > new Date(today);
             });
-            if (newval.length > 0) {
-              nav("../my-ibox");
-            } else {
-              alert("your i-box is empty");
-            }
+            if (newval.length <= 0) {
+              setshowModal('opacity-100 visible');
+
+            } 
           } else {
-            alert("your i-box is empty");
+            setshowModal('opacity-100 visible');
+
           }
         })
         .catch((err) => {
@@ -132,7 +133,9 @@ const Home = () => {
           alert(err.response.data.message);
         });
     }
-  };
+   }, [])
+   
+    
 
   return (
     <>
@@ -160,12 +163,7 @@ const Home = () => {
                 Upload Files
               </button>
 
-              <div
-                className="absolute bottom-0 flex items-center cursor-pointer right-5 go-to-your-files"
-                onClick={handleBox}
-              >
-                or Go to your Box <i class="far fa-angle-right"></i>
-              </div>
+             
             </div>
 
             <div className="w-full flex justify-start home-page-second-section items-center flex-col">
@@ -212,7 +210,7 @@ const Home = () => {
           }}
         ></div>
         <div
-          className={`rounded-lg bg-white whiteBox py-5 pb-10 px-7  relative z-50 ${modalHeight}`}
+          className={`rounded-lg bg-white whiteBox py-5 pb-10 px-7   relative z-50 ${modalHeight}`}
         >
           <div className="flex items-center justify-end">
             <i
@@ -240,7 +238,7 @@ const Home = () => {
                     setshowDropDown("opacity-0 invisible");
                   }
                 }}
-                className="w-full border cursor-pointer rounded mt-1 border-gray-400 relative flex items-center justify-between px-2 py-3"
+                className="w-full border z-20 cursor-pointer rounded mt-1 border-gray-400 relative flex items-center justify-between px-2 py-3"
               >
                 {fileExpiryTime}{" "}
                 <i class="far fa-angle-down text-xl transition"></i>
