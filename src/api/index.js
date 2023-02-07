@@ -4,8 +4,8 @@ import { removeToken } from "../variables/auth";
 
 const api = async (method = "get", uri, body) => {
   // Default setting for production
-  // axios.defaults.baseURL = "http://localhost:8080/";
-  axios.defaults.baseURL = "https://shareibox.com/";
+   axios.defaults.baseURL = "http://localhost:8080/";
+  // axios.defaults.baseURL = "https://shareibox.com/";
   // API Call
   const url = "api/" + uri;
   return new Promise((resolve, reject) => {

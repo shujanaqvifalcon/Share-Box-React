@@ -80,7 +80,7 @@ const Files = (props) => {
     let x = e.substring(22);
     x = x.split(".").shift();
     let y = e.split(".").pop();
-    let image = `https://shareibox.com/${e}`;
+    let image = `http://localhost:8080/${e}`;
 
     axios({
       url: image, //your url
@@ -471,7 +471,7 @@ const Files = (props) => {
                     <>
                       <div className="w-[300px] h-[300px]">
                         <img
-                          src={`https://shareibox.com/${e}`}
+                          src={`http://localhost:8080/${e}`}
                           className="w-full h-full object-cover object-top "
                         />
                       </div>
